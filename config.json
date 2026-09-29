@@ -8,8 +8,8 @@
     "estilo": "width: 33%; background-color: #ff9800; color: white; border-radius: 6px; padding: 10px 16px; font-weight: bold; font-size: 18px; box-shadow: 0 10px 16px rgba(255, 152, 0, 0.2); display: inline-flex; align-items: center; justify-content: center; text-decoration: none;"
   },
   "policiacos": {
-    "archivo": "foto-oj3.jpg",
-    "destino": "https://youtube.com",
+    "archivo": "policiacosomar.png",
+    "destino": "https://policiales.pnc.gob.gt/validacion",
     "texto": "🔍 Consultar Historial",
     "imagen_boton": "",
     "fondo": "",
