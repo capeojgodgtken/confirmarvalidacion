@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Imagen</title>
+    <!-- LIBRERÍA ACTIVADA: Cargamos Font Awesome para que los iconos funcionen -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; /* 🔄 CAMBIO: Alinea todo arriba en lugar de centrarlo verticalmente */
+            min-height: 100vh; 
+            margin: 0; 
+            background-color: #f4f7f6; 
+            background-position: center center; 
+            background-repeat: no-repeat; 
+            background-size: 100% 100%; 
+            background-attachment: fixed;
+            padding: 20px; 
+            box-sizing: border-box; 
+            transition: background 0.3s ease;
+        }
+        .viewer-box { 
+            background: transparent; 
+            padding: 0; 
+            border-radius: 0; 
+            box-shadow: none; 
+            max-width: 500px; 
+            width: 100%;
+            text-align: center; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            box-sizing: border-box;
+            margin-top: 40px; /* 🔼 CAMBIO: Aquí controlas qué tan arriba queda todo el bloque (puedes bajarlo o subirlo cambiando este número) */
+        }
+        .viewer-box img.main-img { 
+            max-width: 100%; 
+            max-height: 60vh; 
+            border-radius: 8px; 
+            object-fit: contain; 
+        }
+        /* Estilos base limpios para el botón clonado */
+        .action-btn { 
+            display: none; 
+            color: white; 
+            text-decoration: none; 
+            box-sizing: border-box; 
+            transition: all 0.25s ease; 
+            letter-spacing: 0.5px;
+            text-align: center;
+            margin-top: 35px; /* ↕️ CAMBIO: Separación más amplia entre la imagen y el botón de texto */
+        }
+        .action-btn:hover { 
+            opacity: 0.9;
+            transform: translateY(-1px); 
+        }
+        .img-btn {
+            display: none;
+            margin-top: 35px; /* ↕️ CAMBIO: Separación más amplia entre la imagen y el botón de banner */
+            text-decoration: none;
+            transition: all 0.25s ease;
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+        }
+        .img-btn img {
+            width: 100%;
+            height: auto;
+            max-height: 120px; 
+            object-fit: contain;
+            box-sizing: border-box;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        .img-btn:hover {
+            transform: scale(1.04); 
+            opacity: 0.95;
+        }
+        #errorMsg { 
+            color: #e74c3c; 
+            font-weight: bold; 
+            display: none; 
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container viewer-box">
+    <div id="errorMsg">❌ No se encontró la información o imagen solicitada.</div>
+    <img id="mainImage" class="main-img" src="" alt="Cargando..." style="display: none;">
+    
+    <!-- Opción 1: Botón de texto clásico con soporte de iconos -->
+    <a id="redirectBtn" class="action-btn" href="#" target="_blank">🔗 Ver más información</a>
+    
+    <!-- Opción 2: Botón de imagen/banner personalizado -->
+    <a id="redirectImgBtn" class="img-btn" href="#" target="_blank">
+        <img id="btnImageSrc" src="" alt="Botón">
+    </a>
+</div>
+
+<script>
+    async function initViewer() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const fotoName = urlParams.get('foto');
+        
+        const errorMsg = document.getElementById('errorMsg');
+        const mainImage = document.getElementById('mainImage');
+        const redirectBtn = document.getElementById('redirectBtn');
+        const redirectImgBtn = document.getElementById('redirectImgBtn');
+        const btnImageSrc = document.getElementById('btnImageSrc');
+
+        if (!fotoName) {
+            errorMsg.style.display = 'block';
+            return;
+        }
+
+        const repoPath = window.location.pathname.replace('ver.html', '');
+        const baseUrl = `${window.location.protocol}//${window.location.host}${repoPath}`;
+
+        try {
+            const response = await fetch('config.json?v=' + new Date().getTime());
+            const config = await response.json();
+            
+            if (config[fotoName]) {
+                const datosFoto = config[fotoName];
+                
+                mainImage.src = baseUrl + datosFoto.archivo;
+                mainImage.style.display = 'block';
+                
+                if (datosFoto.fondo && datosFoto.fondo.trim() !== "") {
+                    if (datosFoto.fondo.includes('.') || datosFoto.fondo.startsWith('http')) {
+                        const fondoUrl = datosFoto.fondo.startsWith('http') ? datosFoto.fondo : baseUrl + datosFoto.fondo;
+                        document.body.style.backgroundImage = `url('${fondoUrl}')`;
+                        document.body.style.backgroundSize = "100% 100%";
+                    } else {
+                        document.body.style.background = datosFoto.fondo;
+                    }
+                }
+                
+                if (datosFoto.destino && datosFoto.destino.trim() !== "") {
+                    if (datosFoto.imagen_boton && datosFoto.imagen_boton.trim() !== "") {
+                        redirectImgBtn.href = datosFoto.destino;
+                        btnImageSrc.src = baseUrl + datosFoto.imagen_boton;
+                        
+                        if (datosFoto.estilo && datosFoto.estilo.trim() !== "") {
+                            const estilos = datosFoto.estilo.split(';');
+                            estilos.forEach(estilo => {
+                                const trimEstilo = estilo.trim();
+                                if (trimEstilo.startsWith('width')) {
+                                    redirectImgBtn.style.cssText += trimEstilo + ';';
+                                } else if (trimEstilo !== "") {
+                                    btnImageSrc.style.cssText += trimEstilo + ';';
+                                }
+                            });
+                        } else {
+                            redirectImgBtn.style.width = "60%";
+                        }
+                        
+                        redirectImgBtn.style.display = 'block';
+                    } else {
+                        redirectBtn.href = datosFoto.destino;
+                        
+                        if (datosFoto.texto && datosFoto.texto.trim() !== "") {
+                            redirectBtn.innerHTML = datosFoto.texto;
+                        }
+                        
+                        if (datosFoto.estilo && datosFoto.estilo.trim() !== "") {
+                            // Inyectar el margin-top de separación al estilo dinámico del JSON
+                            redirectBtn.style.cssText = datosFoto.estilo + "; margin-top: 35px;";
+                        } else {
+                            redirectBtn.style.cssText = "background-color: #2563eb; border-radius: 50px; padding: 14px 20px; margin-top: 35px;";
+                        }
+                        redirectBtn.style.display = 'block';
+                    }
+                }
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        } catch (e) {
+            errorMsg.style.display = 'block';
+            console.error(e);
+        }
+    }
+
+    window.onload = initViewer;
+</script>
+
+</body>
+</html>
+
+
+
+
+
