@@ -1,6 +1,9 @@
 {
   "penales": {
-    "archivo": "download.png",
+    "archivo": "download.jpeg",
+    "filtro_botones": "no",
+    "img_barra_azul": "",
+    "img_error": "",
     "destino": "https://oj.gob.gt",
     "texto": "Regresar &nbsp;&nbsp;<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"4.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"vertical-align: middle; margin-top: -2px;\"><path d=\"M9 14L4 9l5-5\"/><path d=\"M4 9h11a5 5 0 0 1 5 5v3\"/></svg>",
     "imagen_boton": "",
@@ -8,11 +11,15 @@
     "estilo": "width: 33%; background-color: #ff9800; color: white; border-radius: 6px; padding: 10px 16px; font-weight: bold; font-size: 18px; box-shadow: 0 10px 16px rgba(255, 152, 0, 0.2); display: inline-flex; align-items: center; justify-content: center; text-decoration: none;"
   },
   "policiacos": {
-    "archivo": "policiacosomar.png",
-    "destino": "https://policiales.pnc.gob.gt/validacion",
+    "archivo": "foto-oj3.jpg",
+    "filtro_botones": "si",
+    "img_barra_azul": "barra_azul_pregunta.png",
+    "img_error": "no_validado.png",
+    "destino": "https://youtube.com",
     "texto": "🔍 Consultar Historial",
     "imagen_boton": "",
     "fondo": "",
     "estilo": "background-color: #e74c3c; color: white; border-radius: 12px; padding: 10px 16px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); display: inline-block;"
   }
 }
+
